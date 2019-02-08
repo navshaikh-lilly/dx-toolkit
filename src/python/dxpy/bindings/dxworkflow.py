@@ -486,6 +486,12 @@ class DXWorkflow(DXDataObject, DXExecutable):
                 for _stage in kwargs['rerun_stages']
             ]
 
+        if kwargs.get('ignore_reuse_stages') is not None:
+            run_input['ignoreReuse'] = [
+                _stage if _stage == '*' else self._get_stage_id(_stage)
+                for _stage in kwargs['ignore_reuse_stages']
+            ]
+
         return run_input
 
     def _run_impl(self, run_input, **kwargs):
@@ -503,6 +509,8 @@ class DXWorkflow(DXDataObject, DXExecutable):
         :type stage_folders: dict
         :param rerun_stages: A list of stage IDs, names, indices, and/or the string "*" to indicate which stages should be run even if there are cached executions available
         :type rerun_stages: list of strings
+        :param ignore_reuse_stages: Stages of a workflow (IDs, names, or indices) or "*" for which job reuse should be disabled
+        :type ignore_reuse_stages: list
         :returns: Object handler of the newly created analysis
         :rtype: :class:`~dxpy.bindings.dxanalysis.DXAnalysis`
 
